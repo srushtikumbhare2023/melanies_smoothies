@@ -7,9 +7,9 @@ st.write("Choose the fruits you want in your custom smoothie.")
 
 # Snowflake connection
 connection_parameters = {
-    "account": "your_account",
-    "user": "your_username",
-    "private_key_file": "./keys/snowflake_key.p8",
+    "account": "CIGBIEV-FIB48928",
+    "user": "SRUSHTIKUMBHARE2023",
+    "private_key_file": "snow://streamlit/SMOOTHIES.PUBLIC.J94VZ1X5JT7H3XIF/versions/live/snowflake_key.p8",
     "role": "SYSADMIN",
     "warehouse": "COMPUTE_WH",
     "database": "SMOOTHIES",
