@@ -1,6 +1,7 @@
 # Import python packages
+from snowflake.snowpark import Session
 import streamlit as st
-import pandas as pd
+from snowflake.snowpark.functions import col
 
 # Write directly to the app
 st.title(f"Customize Your Smoothie! :cup_with_straw:")
@@ -10,9 +11,19 @@ st.write(
 )
 name_on_order = st.text_input("Name on Smoothie:")
 st.write("The name of your Smoothie will be:", name_on_order)
-cnx = st.connection("snowflake")
-session = cnx.session()
-my_dataframe = session.table("smoothies.public.fruit_options").select("FRUIT_NAME").to_pandas()
+connection_parameters = {
+    "account": "CIGBIEV-FIB48928",
+    "user": "SRUSHTIKUMBHARE2023",
+    "password": "Srush@0987654321",
+    "warehouse": "COMPUTE_WH",
+    "database": "SMOOTHIES",
+    "schema": "PUBLIC"
+}
+
+session = Session.builder.configs(connection_parameters).create()
+st.success("Snowflake session created!")
+
+my_dataframe = session.table("smoothies.public.fruit_options").select(col('FRUIT_NAME'))
 #st.dataframe(data=my_dataframe, use_container_width=True)
 
 ingredients_list = st.multiselect(
@@ -20,7 +31,7 @@ ingredients_list = st.multiselect(
     ,my_dataframe
     ,max_selections=5
 )
-name_on_order = st.text_input("Enter your name for the order:")
+NAME_ON_ORDER = st.text_input("Enter your name for the order:")
 
 if ingredients_list:  # 4 spaces or a tab           
     
@@ -30,7 +41,7 @@ if ingredients_list:  # 4 spaces or a tab
     #st.write(ingredients_list)
 
     my_insert_stmt = """insert into smoothies.public.orders(ingredients, name_on_order)
-        values ('""" + ingredients_string + """','""" + name_on_order + """')"""
+        values ('""" + ingredients_string + """','""" + NAME_ON_ORDER + """')"""
 
     st.write(my_insert_stmt)
     #st.stop()
