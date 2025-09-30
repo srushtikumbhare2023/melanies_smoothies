@@ -13,11 +13,11 @@ name_on_order = st.text_input("Name on Smoothie:")
 st.write("The name of your Smoothie will be:", name_on_order)
 # Connection parameters
 connection_parameters = {
-    "account": "YOUR_ACCOUNT",
-    "user": "YOUR_USER",
-    "password": "YOUR_PASSWORD",
-    "warehouse": "YOUR_WAREHOUSE",
-    "database": "YOUR_DATABASE",
+    "account": "CIGBIEV-FIB48928",
+    "user": "SRUSHTIKUMBHARE2023",
+    "password": "Srush@0987654321",
+    "warehouse": "COMPUTE_WH",
+    "database": "SMOOTHIES",
     "schema": "PUBLIC"
 }
 
@@ -31,7 +31,7 @@ ingredients_list = st.multiselect(
     ,my_dataframe
     ,max_selections=5
 )
-NAME_ON_ORDER = st.text_input("Enter your name for the order:")
+name_on_order = st.text_input("Enter your name for the order:")
 
 if ingredients_list:  # 4 spaces or a tab           
     
@@ -41,7 +41,7 @@ if ingredients_list:  # 4 spaces or a tab
     #st.write(ingredients_list)
 
     my_insert_stmt = """insert into smoothies.public.orders(ingredients, name_on_order)
-        values ('""" + ingredients_string + """','""" + NAME_ON_ORDER + """')"""
+        values ('""" + ingredients_string + """','""" + name_on_order + """')"""
 
     st.write(my_insert_stmt)
     #st.stop()
