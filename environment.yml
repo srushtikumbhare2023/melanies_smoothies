@@ -4,4 +4,4 @@ channels:
 dependencies:
   - python=3.9.*
   - snowflake-snowpark-python=
-  - streamlit=
+  - streamlit=1.29.0
