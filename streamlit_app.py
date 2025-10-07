@@ -3,6 +3,7 @@ import streamlit as st
 import pandas as pd
 from snowflake.snowpark.functions import col
 import requests
+import hashlib
 
 # App title and description
 st.title(":cup_with_straw: Customize Your Smoothie! :cup_with_straw:")
@@ -31,9 +32,9 @@ ingredients_list = st.multiselect(
     max_selections=5
 )
 
-# Step 5: Only proceed if both name and ingredients are provided
+# Step 5: Proceed only if both name and ingredients are provided
 if ingredients_list and name_on_order:
-    # Combine all selected fruits into a single string
+    # Combine selected fruits into one string
     ingredients_string = " ".join(ingredients_list).strip()
 
     # Show nutrition info for each selected fruit
@@ -43,19 +44,23 @@ if ingredients_list and name_on_order:
         smoothiefroot_response = requests.get(f"https://my.smoothiefroot.com/api/fruit/{search_on}")
         st.dataframe(data=smoothiefroot_response.json(), use_container_width=True)
 
+    # Compute ORDER_UID (as required in DABW challenge)
+    order_uid = hash(name_on_order + ingredients_string)
+
     # Prepare SQL insert for one smoothie order
     my_insert_stmt = f"""
-        INSERT INTO smoothies.public.orders (ingredients, name_on_order)
-        VALUES ('{ingredients_string}', '{name_on_order}')
+        INSERT INTO smoothies.public.orders (ingredients, name_on_order, order_uid)
+        VALUES ('{ingredients_string}', '{name_on_order}', {order_uid})
     """
 
     # Show SQL preview
-    st.write("SQL Query:", my_insert_stmt)
+    st.write("SQL Query Preview:", my_insert_stmt)
 
     # Step 6: Submit order
     if st.button("Submit Order"):
         session.sql(my_insert_stmt).collect()
-        st.success(f"Your Smoothie is ordered, {name_on_order}!", icon="✅")
+        st.success(f"✅ Your Smoothie is ordered, {name_on_order}!")
+        st.balloons()
 
 else:
     st.info("👉 Please enter your name and select ingredients to create your smoothie.")
