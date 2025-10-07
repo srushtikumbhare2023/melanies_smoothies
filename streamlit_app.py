@@ -2,7 +2,8 @@
 import streamlit as st
 import pandas as pd
 # from snowflake.snowpark.context import get_active_session
-from snowflake.snowpark.functions import col
+# from snowflake.snowpark.functions import col
+from snowflake.snowpark.functions import col, concat_ws
 import requests
 # Write directly to the app
 st.title(f":cup_with_straw: Customize Your Smoothie!:cup_with_straw: ")
@@ -21,7 +22,14 @@ name_on_order = st.text_input('Name on Smoothie:')
 st.write('The name on your Smoothie will be:',name_on_order)
 cnx = st.connection("snowflake")
 session = cnx.session()  
-my_dataframe = session.table("smoothies.public.fruit_options").select(col('FRUIT_NAME'), col('SEARCH_ON'))
+# my_dataframe = session.table("smoothies.public.fruit_options").select(col('FRUIT_NAME'), col('SEARCH_ON'))
+# Get pending orders grouped by order
+my_dataframe = (
+    session.table('smoothies.public.orders')
+    .filter(col("ORDER_FILLED") == 0)
+    .group_by("ORDER_UID", "NAME_ON_ORDER")
+    .agg(concat_ws(" ", collect_list("INGREDIENTS")).alias("INGREDIENTS"))
+)
 # st.dataframe(data=my_dataframe, use_container_width=True)
 # st.stop()
 # Convert the Snowpark Dataframe to a Pandas Dataframe so we can use the LOC function
