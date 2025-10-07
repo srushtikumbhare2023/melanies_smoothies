@@ -28,7 +28,7 @@ my_dataframe = (
     session.table('smoothies.public.orders')
     .filter(col("ORDER_FILLED") == 0)
     .group_by("ORDER_UID", "NAME_ON_ORDER")
-    .agg(concat_ws(" ", collect_list("INGREDIENTS")).alias("INGREDIENTS"))
+    .agg(concat_ws(" ", col("INGREDIENTS")).alias("INGREDIENTS"))
 )
 # st.dataframe(data=my_dataframe, use_container_width=True)
 # st.stop()
